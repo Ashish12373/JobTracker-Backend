@@ -1,24 +1,24 @@
-# Step 1: Use Maven to build the JAR
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+# Step 1: Use Maven with Java 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy pom.xml and download dependencies first (cache layer)
+# Copy pom.xml and download dependencies
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copy source code and build the app
+# Copy source and build
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Step 2: Use lightweight JDK for running the app
-FROM eclipse-temurin:17-jdk-alpine
+# Step 2: Lightweight JDK 21 for running the app
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
-# Copy built jar from previous stage
+# Copy built jar
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080 (default for Spring Boot)
+# Expose port
 EXPOSE 8080
 
-# Start the app
+# Run app
 ENTRYPOINT ["java", "-jar", "app.jar"]
