@@ -13,9 +13,13 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // allow all endpoints
-                        .allowedOrigins("http://localhost:3000") // your React app
+                registry.addMapping("/**")
+                        .allowedOrigins(
+                                "http://localhost:3000",   // local dev React
+                                "https://job-tracker-frontend-lemon.vercel.app/" // replace with deployed frontend later
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
                         .allowCredentials(true);
             }
         };
